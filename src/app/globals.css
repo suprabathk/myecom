@@ -18,10 +18,16 @@ body {
 }
 
 .searchBar {
-  display: flex;
+  display: none;
   align-items: center;
   font-size: 0.875rem;
   line-height: 1.25rem;
+}
+
+@media (min-width: 640px) {
+  .searchBar {
+    display: flex;
+  }
 }
 
 .categoryDropDown {

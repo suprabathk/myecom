@@ -626,3 +626,11 @@ body {
 .cartCheckoutBtn:hover {
   background-color: #047857;
 }
+
+.emptyCartText {
+  margin: 1rem;
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+  font-weight: 700;
+  text-align: center;
+}

@@ -65,61 +65,67 @@ const Cart = ({ closeModal }: { closeModal: () => void }) => {
               : 0;
             totalPrice += productTotalPrice;
             return (
-              <div key={product.id} className="cartProductCard">
-                <div className="cartProductInfo">
-                  <div>
-                    <div className="cartImage">
-                      <img src={product.image} alt="product-image" />
-                    </div>
-                    <button
-                      onClick={() => removeAll(product.id)}
-                      className="cartProductRemoveBtn"
-                    >
-                      <TrashIcon className="icon4" />
-                      <span>Remove</span>
-                    </button>
-                  </div>
-                  <div>
-                    <p className="cartProductTitle">{product.title}</p>
+              <div key={product.id}>
+                <div className="cartProductCard">
+                  <div className="cartProductInfo">
                     <div>
-                      <p className="cartProductPrice">
-                        {productPrice} USD{" "}
-                        {
-                          <span>
-                            x {product.cartCount} item
-                            {product.cartCount !== null &&
-                              product.cartCount !== 1 &&
-                              "s"}
-                          </span>
-                        }
-                      </p>
-                      <p className="cartProductMRP">
-                        {Number.parseFloat(product.price).toFixed(2)} USD
-                      </p>
+                      <div className="cartImage">
+                        <img src={product.image} alt="product-image" />
+                      </div>
+                      <button
+                        onClick={() => removeAll(product.id)}
+                        className="cartProductRemoveBtn"
+                      >
+                        <TrashIcon className="icon4" />
+                        <span>Remove</span>
+                      </button>
+                    </div>
+                    <div>
+                      <p className="cartProductTitle">{product.title}</p>
+                      <div>
+                        <p className="cartProductPrice">
+                          {productPrice} USD{" "}
+                          {
+                            <span>
+                              x {product.cartCount} item
+                              {product.cartCount !== null &&
+                                product.cartCount !== 1 &&
+                                "s"}
+                            </span>
+                          }
+                        </p>
+                        <p className="cartProductMRP">
+                          {Number.parseFloat(product.price).toFixed(2)} USD
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div>
+                    <div className="cartProductQuantityBtn">
+                      <button onClick={() => removeOne(product.id)}>-</button>
+                      <span>{product.cartCount}</span>
+                      <button onClick={() => addOne(product.id)}>+</button>
+                    </div>
+                    <div className="cartProductTotal ">
+                      {product.cartCount !== null &&
+                        `${productTotalPrice.toFixed(2)} USD`}
                     </div>
                   </div>
                 </div>
-                <div>
-                  <div className="cartProductQuantityBtn">
-                    <button onClick={() => removeOne(product.id)}>-</button>
-                    <span>{product.cartCount}</span>
-                    <button onClick={() => addOne(product.id)}>+</button>
-                  </div>
-                  <div className="cartProductTotal ">
-                    {product.cartCount !== null &&
-                      `${productTotalPrice.toFixed(2)} USD`}
-                  </div>
+                <div className="cartSubtotalRow">
+                  <span className="cartSubtotalText">Subtotal:</span>
+                  <span className="cartSubtotal">
+                    {totalPrice.toFixed(2)} USD
+                  </span>
                 </div>
+                <button className="cartCheckoutBtn">Checkout</button>
               </div>
             );
           })}
-          {cart.length <= 0 && <p>No items in cart!</p>}
+          {cart.length <= 0 && (
+            <p className="emptyCartText">No items in cart!</p>
+          )}
         </div>
-        <div className="cartSubtotalRow">
-          <span className="cartSubtotalText">Subtotal:</span>
-          <span className="cartSubtotal">{totalPrice.toFixed(2)} USD</span>
-        </div>
-        <button className="cartCheckoutBtn">Checkout</button>
       </div>
     </div>
   );

@@ -1,95 +1,106 @@
-import Image from 'next/image'
-import styles from './page.module.css'
+/* eslint-disable @next/next/no-img-element */
+"use client";
+
+import FiltersBar from "@/components/FiltersBar";
+import { Product } from "@/types/types";
+import { ShoppingBagIcon } from "@heroicons/react/24/solid";
+import { PlusIcon, StarIcon } from "@heroicons/react/24/outline";
+import { useEffect, useState } from "react";
+import { useCartContext } from "@/context/CartContext";
 
 export default function Home() {
+  const [products, setProducts] = useState<Product[]>([]);
+  const { cart, setCart } = useCartContext();
+
+  const fetchProducts = (category: string) => {
+    fetch(
+      `https://fakestoreapi.com/products${
+        category.length > 0 ? `/category/${category}` : ""
+      }`
+    )
+      .then((res) => res.json())
+      .then((json) => setProducts(json));
+  };
+
+  const onAddToCart = (product: Product, discount: number) => {
+    let flag = false;
+    setCart((cart) => {
+      const newCart = cart.map((prod) => {
+        if (prod.id === product.id) {
+          flag = true;
+          return {
+            ...prod,
+            cartCount: prod.cartCount ? prod.cartCount + 1 : 1,
+          };
+        } else {
+          return prod;
+        }
+      });
+      return flag
+        ? newCart
+        : [...cart, { ...product, cartCount: 1, discount: discount }];
+    });
+  };
+
+  useEffect(() => {
+    fetchProducts("");
+  }, []);
+
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.tsx</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
+    <div className="productsBody">
+      <FiltersBar fetchProducts={fetchProducts} />
+      <div className="productsGrid">
+        {products.map((product, id) => {
+          const discount = Math.floor(Math.random() * (60 - 20 - +1)) + 20;
+          return (
+            <div key={id} className="productCard">
+              <div className="productImageSection">
+                <p className="discountBubble">- {discount}%</p>
+                <img
+                  src={product.image}
+                  alt="product-image"
+                  className="productImage"
+                />
+              </div>
+              <p className="productTitle">{product.title}</p>
+              <p className="productDescription">{product.description}</p>
+              <div className="ratingRow">
+                {Array.from(Array(Math.floor(product.rating.rate)).keys()).map(
+                  (r) => (
+                    <StarIcon key={r} className="productActiveStar" />
+                  )
+                )}
+                {Array.from(
+                  Array(5 - Math.floor(product.rating.rate)).keys()
+                ).map((r) => (
+                  <StarIcon key={r} className="productInactiveStar" />
+                ))}
+              </div>
+              <div className="cardActions">
+                <div className="productCardPrices">
+                  <p className="productCardPrice">
+                    {(
+                      Number.parseFloat(product.price) -
+                      (discount / 100) * Number.parseFloat(product.price)
+                    ).toFixed(2)}{" "}
+                    USD
+                  </p>
+                  <p className="productCardMRP">
+                    {Number.parseFloat(product.price).toFixed(2)} USD
+                  </p>
+                </div>
+                <button
+                  onClick={() => onAddToCart(product, discount)}
+                  className="addToCartBtn"
+                >
+                  <ShoppingBagIcon className="icon4" />
+                  <span>Add to cart</span>
+                </button>
+              </div>
+            </div>
+          );
+        })}
       </div>
-
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore the Next.js 13 playground.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  )
+    </div>
+  );
 }

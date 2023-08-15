@@ -634,3 +634,8 @@ body {
   font-weight: 700;
   text-align: center;
 }
+
+::selection {
+  color: white;
+  background-color: #047857;
+}

@@ -25,6 +25,7 @@ body {
 }
 
 .categoryDropDown {
+  cursor: pointer;
   display: flex;
   position: relative;
   padding-top: 0.25rem;
@@ -45,6 +46,7 @@ body {
 .categoryDropDown button {
   padding: 0;
   background: transparent;
+  cursor: pointer;
   border: none;
   display: flex;
   gap: 0.25rem;
